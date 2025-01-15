@@ -39,14 +39,14 @@ SECTION MBR vstart=0x7c00
     mov ax, message
     mov bp, ax
     mov ax, 0x1301
-    mov cx, 0x03
+    mov cx, 0x04
     mov bx, 0x02
     int 0x10
 
 ; 循环等待
     jmp $
 ; 要显示的字符串
-    message db "MBR"
+    message db "MBR1"
 ; 将510个字节中剩余的空间填充为0
 ; $ 是当前地址
 ; $$ 是本节开头地址，也就是0x7c00
