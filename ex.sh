@@ -1,6 +1,7 @@
 mkdir -p out/boot/
 
-nasm -o  out/boot/boot.bin boot/mbr.s 
+nasm -I boot/ -o  out/boot/boot.bin boot/mbr.s 
+nasm -I boot/ -o  out/boot/loader.bin boot/loader.s 
 
 name="out/myos.img"
 if [ -e $name ]; then
@@ -8,15 +9,7 @@ if [ -e $name ]; then
 else
     qemu-img create -f raw out/myos.img 60M
 fi
-dd if=out/boot/boot.bin of=out/myos.img bs=512 count=1 conv=notrunc
-qemu-system-i386 -drive format=raw,file=out/myos.img
-
-# if [ -e fileimgPath ]; then
-#     echo "文件存在"
-# else
-#     echo "文件不存在"
-# fi
-
-# qemu-img create -f raw out/myos.img 60M
-# nasm -o  out/boot/boot.bin boot/mbr.s 
-# dd 
+dd if=out/boot/boot.bin of=out/myos.img bs=512 count=1 seek=0 conv=notrunc
+dd if=out/boot/loader.bin of=out/myos.img bs=512 count=2 seek=1 conv=notrunc
+# qemu-system-i386 -drive format=raw,file=out/myos.img 
+qemu-system-i386 -drive format=raw,file=out/myos.img -S -s
