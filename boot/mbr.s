@@ -5,7 +5,7 @@
 
 
 
-
+SECTION MBR vstart=0x7c00 
  
     mov ax,cs  
     mov ds,ax
@@ -16,27 +16,7 @@
     mov ax,0xb800
     mov gs,ax
 
-; 利用0x06号功能实现清理屏幕
-; AL = 0x06 功能号
-; AL 上卷的行数(如果为0,表示全部)
-; BH 上卷行属性
-; (CL,CH) = 窗口左上角的(X,Y)位置,这里是 (0,0)
-; (DL,DH) = 窗口右下角的(X,Y)位置,这里是 (80,25)
-    mov    ah, 0x06
-    mov    al, 0x00
-    mov    bh, 0x7
-    mov    bl, 0x00
-    mov    cx, 0     
-    mov    dx, 0x184f
-    int    0x10             ; int 0x10
 
-;[] 代表内存引用
-    mov byte [gs:0x00],'M'  ; 将字符为M的ascii值放入到 内存为之为gs:0x00的地方  
-    mov byte [gs:0x01],0x0F	; 11100001b 即背景色为黑，字体为白，不闪烁 
-    mov byte [gs:0x02],'B'  ;
-    mov byte [gs:0x03],0x0F	; 
-    mov byte [gs:0x04],'R'  ;
-    mov byte [gs:0x05],0x0F	;
 
     mov eax,LOADER_START_SECTOR	 ; Loader起始扇区 
     mov bx, LOADER_BASE_ADDR     ; Loader起始内存地址

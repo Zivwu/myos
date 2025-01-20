@@ -12,4 +12,4 @@ fi
 dd if=out/boot/boot.bin of=out/myos.img bs=512 count=1 seek=0 conv=notrunc
 dd if=out/boot/loader.bin of=out/myos.img bs=512 count=2 seek=1 conv=notrunc
 # qemu-system-i386 -drive format=raw,file=out/myos.img 
-qemu-system-i386 -drive format=raw,file=out/myos.img -S -s
+qemu-system-i386 -drive format=raw,file=out/myos.img -S -s -monitor stdio
