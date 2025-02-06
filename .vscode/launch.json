@@ -1,48 +1,27 @@
 {
-    // 使用 IntelliSense 了解相关属性。 
-    // 悬停以查看现有属性的描述。
-    // 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
- 
         {
-            "name": "(gdb)",
-            "type": "cppdbg",
-            "miDebuggerPath": "/opt/homebrew/bin/x86_64-elf-gdb",
+            "name": "Debug boot.bin with QEMU",
+            "type": "gdb",
             "request": "launch",
+            "program": "${workspaceFolder}/boot.elf",
+            "args": [],
             "stopAtEntry": true,
-            "program": "${workspaceRoot}/boot/boot.elf",
-            "cwd": "${workspaceRoot}",
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build",
+            // "postDebugTask": "stop qemu"
         }
-
-
-        // {
-        //     "name": "(gdb) 启动",
-        //     "type": "cppdbg",
-        //     "request": "launch",
-        //     "program": "${workspaceFolder}/boot/boot.o",
-        //     "args": [],
-        //     "stopAtEntry": false,
-        //     "cwd": "${workspaceRoot}",
-        //     "environment": [],
-        //     "externalConsole": false,
-        //     "MIMode": "gdb",
-        //     "miDebuggerPath": "/opt/homebrew/bin/x86_64-elf-gdb",
-           
-        //     "targetArchitecture": "x86",
-        //     "stopAtConnect": true,
-        //     // 启动gdb之前，做些准备：写映像文件、启动qemu
-        //     "windows": {
-        //         "preLaunchTask": "调试准备", // 仅在windows下可自动运行
-        //     },
-        //     "linux": {
-        //         "preLaunchTask": "调试准备", // 仅在windows下可自动运行
-        //         "miDebuggerPath": "gdb", // linux下的特殊配置
-        //     },
-        //     "customLaunchSetupCommands": [],
-      
-        // }
     ]
 }
-
-

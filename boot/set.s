@@ -1,5 +1,4 @@
-%include "boot.inc" 
-section loader vstart=LOADER_BASE_ADDR 
+section loader vstart=0x600 
 .begin_loader:
     mov byte [gs:0x00],'L'  ; 字符为M的ascii值
     mov byte [gs:0x01],0x0F	; 11100001b 即背景色为黑，字体为白，不闪烁 
@@ -15,4 +14,4 @@ section loader vstart=LOADER_BASE_ADDR
     mov byte [gs:0x0B],0x0F	;
 
 ; 程序在此处卡住
-jmp $
+jmp .
