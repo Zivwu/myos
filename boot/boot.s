@@ -17,16 +17,77 @@ begbss:
 
 
 # 
-BOOTSEG = 0X7C00
+BOOTSEG = 0x7c00
 
+SETUPLEN = 4              #setup.s 占用4个扇区
+SETUPSEG = 0x9000         #setup.s 存放位置,并存储
 
 _start:
-  call .hello_World
-  jmp .loop
+  movw $3,%cx
+  call hello_World
+  call rd_disk_16
 
 
-#使用BIOS提供的0x10中断显示字符串
-.hello_World:
+rd_disk_16:
+  call .wait_disk
+
+  movw $0x1F3,%dx         #LAB
+  movb $1,%al
+  outb %al,%dx            #设置LBA低地址,1
+
+  movb $0,%al
+  movw $0x1f4,%dx
+  outb %al,%dx            #设置LBA中地址,0
+
+  movw $0x1f5,%dx
+  outb %al,%dx            #设置LBA高地址,0
+
+  # 0-3位，在CHS寻址中表示柱头位，在LBA寻址中，表示LBA地址的24-27位。4位DRV，表示选择主盘或者从盘。
+  # 5位、永远为1。6位、如果为0则为CHS寻址，如果为1则为LBA寻址。7位、永远为1。
+  # 1110_0000
+  movw $0x1f6,%dx         #设置LBA顶地址,并设置硬盘工作模式
+  movb $0xe0, %al      
+  outb %al,%dx            
+
+  movw $0x1f2,%dx
+  movb $SETUPLEN,%al
+  outb %al,%dx          # 设置要读取扇区数
+
+  movw $0x1f7, %dx       #
+  movb $0x20, %al        # 读扇区指令         
+  outb %al, %dx
+  call .wait_disk
+  call .go_on_read
+  ljmp $0, $SETUPSEG
+
+.wait_disk:
+  movw $0x1f7,%dx
+  inb %dx,%al             #读取硬盘状态
+  testb $0x88 ,%al        #同时检查第 7 位(Busy)和第 3 位(Ready)
+  jnz .wait_disk
+  ret 
+
+.go_on_read:
+  movw $SETUPSEG,%ax
+  movw %ax,%es
+  movw $256, %bx
+  mulw %bx
+  movw %ax, %cx
+  movw $0x1f0, %dx
+  cld
+  movw $0,%di
+  call .read
+  ret
+   
+
+.read:
+  inw %dx, %ax 
+  stosw
+  loop .read
+  ret
+  
+
+hello_World:
   movw $msg, %ax
   movw %ax, %bp
   movw $16, %cx
