@@ -23,13 +23,18 @@ SETUPLEN = 4              #setup.s 占用4个扇区
 SETUPSEG = 0x9000         #setup.s 存放位置,并存储
 
 _start:
-  movw $3,%cx
+  movw $BOOTSEG, %ax    ; 假设栈段和代码段相同
+  movw %ax, %ss         ; 设置栈段寄存器
+  movw $0xFFFE, %sp     ; 设置栈指针
+  movw %ax, %cx
   call hello_World
-  call rd_disk_16
 
 
 rd_disk_16:
-  call .wait_disk
+  movw $0x1f7,%dx
+  inb %dx,%al             #读取硬盘状态
+  testb $0x80 ,%al        #同时检查第 7 位(Busy)和第 3 位(Ready)
+  jnz rd_disk_16
 
   movw $0x1F3,%dx         #LAB
   movb $1,%al
@@ -56,16 +61,14 @@ rd_disk_16:
   movw $0x1f7, %dx       #
   movb $0x20, %al        # 读扇区指令         
   outb %al, %dx
-  call .wait_disk
+
+.wait_disk:
+  inb %dx,%al 
+  testb $0x8 ,%al
+  jnz .wait_disk
   call .go_on_read
   ljmp $0, $SETUPSEG
 
-.wait_disk:
-  movw $0x1f7,%dx
-  inb %dx,%al             #读取硬盘状态
-  testb $0x88 ,%al        #同时检查第 7 位(Busy)和第 3 位(Ready)
-  jnz .wait_disk
-  ret 
 
 .go_on_read:
   movw $SETUPSEG,%ax
