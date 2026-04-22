@@ -2,12 +2,12 @@ mkdir -p out/boot/
 
 root=$(pwd)
 echo "当前目录: $(pwd)"
-x86_64-elf-gcc -m16 -c boot/boot.s  -o out/boot/boot.o
-x86_64-elf-gcc -m16 -c boot/set.s  -o out/boot/set.o
+x86_64-elf-gcc -m16 -g -c boot/boot.s -o out/boot/boot.o
+x86_64-elf-gcc -m16 -g -c boot/set.s -o out/boot/set.o
 
 
 cd out/boot
-x86_64-elf-ld -m elf_i386 -Ttext 0x7c00 -o boot.elf boot.o  set.o
+x86_64-elf-gcc -m16 -g -nostdlib -Wl,-m,elf_i386,-Ttext,0x7c00 -o boot.elf boot.o set.o
 x86_64-elf-objcopy -O binary boot.elf boot.bin
 
 

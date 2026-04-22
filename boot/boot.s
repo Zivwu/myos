@@ -23,9 +23,9 @@ SETUPLEN = 4              #setup.s 占用4个扇区
 SETUPSEG = 0x9000         #setup.s 存放位置,并存储
 
 _start:
-  movw $BOOTSEG, %ax    ; 假设栈段和代码段相同
-  movw %ax, %ss         ; 设置栈段寄存器
-  movw $0xFFFE, %sp     ; 设置栈指针
+  movw $BOOTSEG, %ax    # 假设栈段和代码段相同
+  movw %ax, %ss         # 设置栈段寄存器
+  movw $0xFFFE, %sp     # 设置栈指针
   movw %ax, %cx
   call hello_World
 
@@ -114,4 +114,3 @@ endtext:
 enddata:
 .bss
 endbss:
-

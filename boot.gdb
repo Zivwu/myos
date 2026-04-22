@@ -1,0 +1,4 @@
+file out/boot/boot.elf
+target remote localhost:1234
+layout regs
+b *0x7c00
